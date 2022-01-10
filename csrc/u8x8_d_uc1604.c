@@ -155,6 +155,8 @@ uint8_t u8x8_d_uc1604_common(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *a
   module whether the display has a is low or high active chip select.
 
 */
+#define ROW_NUM 192
+#define COL_NUM 48
 static const u8x8_display_info_t u8x8_uc1604_192x64_display_info =
 {
   /* chip_enable_level = */ 0,	/* JLX19264G uses CS0, which is low active CS*/
@@ -175,14 +177,17 @@ static const u8x8_display_info_t u8x8_uc1604_192x64_display_info =
   /* tile_hight = */ 8,
   /* default_x_offset = */ 0,	/* reused as y page offset */
   /* flipmode_x_offset = */ 0,	/* reused as y page offset */
-  /* pixel_width = */ 192,
-  /* pixel_height = */ 64
+  /* pixel_width = */ ROW_NUM,
+  /* pixel_height = */ COL_NUM,
 };
+
+#define COL_END ((COL_NUM % 8 == 0) ? (COL_NUM - 1) : (COL_NUM - 2))
 
 static const uint8_t u8x8_d_uc1604_jlx19264_init_seq[] = {
     
   U8X8_START_TRANSFER(),             	/* enable chip, delay is part of the transfer start */
 
+#if 0
   U8X8_C(0x0e2),            			/* soft reset */
   U8X8_DLY(200),
   U8X8_DLY(200),
@@ -209,8 +214,41 @@ static const uint8_t u8x8_d_uc1604_jlx19264_init_seq[] = {
   U8X8_C(0x000),		                /* column low nibble */
   U8X8_C(0x010),		                /* column high nibble */  
   U8X8_C(0x0b0),		                /* page adr  */
-  
-  
+#else
+  U8X8_C(0xE2), /* soft reset */
+  U8X8_DLY(200),
+
+  U8X8_C(0xEA),   /* bais: 0xeb=1/9bias; 0xe8=1/6bias; 0xe9=1/7bias; 0xea=1/8bias */
+  U8X8_DLY(200),
+
+  U8X8_C(0x02F),  /* power on, Bit 2 PC2=1 (internal charge pump), Bits 0/1: cap of panel */
+  U8X8_DLY(200),
+
+  U8X8_C(0x85),   /* Set Partial Display Control   Enable Partial Display */ 
+  U8X8_DLY(200),
+
+  U8X8_C(0x81),  /* Set Vbisa Potentiometer */
+  U8X8_C(0x9F),  /* Set VopSet(USERVOP), PM[7:0] */
+  U8X8_C(0xA1),  /* Set Frame Rate  A0b: 76 fps A1b: 95 fps A2b: 132 fps A3b: 168 fps */
+  U8X8_C(0x2F),  /* set pump control:0x2f=internal Vlcd; 0x2c=external Vlcd */
+  U8X8_C(0x25),   /* Bit 0/1: Temp compenstation, Bit 2: Multiplex Rate 0=96, 1=128 */
+  U8X8_C(0x88),		/* set AC[2:0] */
+
+  U8X8_C(0xC4),		/* LCD mapping control: MY=0,MX=0,SL=0  1 1 0 0 0 MY MX 0 */
+
+  U8X8_C(0xF1),		/* Set COM end */
+  U8X8_C(COL_END),   /* (Col % 8 == 0) ? (Col - 1) : (Col - 2) */
+
+  U8X8_C(0xF2),   /* Set Start */
+  U8X8_C(0x00),   /* ... */
+
+  U8X8_C(0xF3),   /* Set End */
+  U8X8_C(COL_END),  /* 0x2f */
+
+  U8X8_C(0xAF), /* Set Display On */
+  U8X8_DLY(200),
+#endif // UC1604C
+
   U8X8_END_TRANSFER(),             	/* disable chip */
   U8X8_END()             			/* end of sequence */
 };
