@@ -1,7 +1,7 @@
 #include "u8g2port.h"
 
 static int i2c_device;
-static const char i2c_bus[] = "/dev/i2c-1";
+static const char i2c_bus[] = "/dev/i2c-2";
 
 static int spi_device;
 static const char spi_bus[] = "/dev/spidev0.0";
@@ -252,13 +252,13 @@ uint8_t u8x8_byte_arm_linux_hw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, v
 
         case U8X8_MSG_BYTE_INIT:
             i2c_device = openI2CDevice(i2c_bus);
-            // printf("I2C File Descriptor: %d\n", fd);
+            printf("I2C File Descriptor: %d\n", i2c_device);
             break;
 
         case U8X8_MSG_BYTE_START_TRANSFER:
             setI2CSlave(i2c_device, u8x8_GetI2CAddress(u8x8)>>1);
             buf_idx = 0;
-            // printf("I2C Address: %02x\n", u8x8_GetI2CAddress(u8x8)>>1);
+            printf("I2C-Address: %02x\n", u8x8_GetI2CAddress(u8x8)>>1);
             break;
 
         case U8X8_MSG_BYTE_END_TRANSFER:
