@@ -114,6 +114,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <limits.h>
+#include <stdio.h>
 
 #if defined(__GNUC__) && defined(__AVR__)
 #include <avr/pgmspace.h>
@@ -361,7 +362,7 @@ struct u8x8_struct
   void *user_ptr;
 #endif
 #ifdef U8X8_USE_PINS 
-  uint8_t pins[U8X8_PIN_CNT];	/* defines a pinlist: Mainly a list of pins for the Arduino Envionment, use U8X8_PIN_xxx to access */
+  uint16_t pins[U8X8_PIN_CNT];	/* defines a pinlist: Mainly a list of pins for the Arduino Envionment, use U8X8_PIN_xxx to access */
 #endif
 };
 
@@ -936,6 +937,7 @@ uint8_t u8x8_d_ssd1329_96x96_noname(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, 
 uint8_t u8x8_d_uc1601_128x32(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
 uint8_t u8x8_d_uc1601_128x64(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
 uint8_t u8x8_d_uc1604_jlx19264(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
+uint8_t u8x8_d_uc1604_jlx19248(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
 uint8_t u8x8_d_uc1608_erc24064(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
 uint8_t u8x8_d_uc1608_dem240064(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
 uint8_t u8x8_d_uc1608_erc240120(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);

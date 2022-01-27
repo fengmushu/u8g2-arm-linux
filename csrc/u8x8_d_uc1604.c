@@ -155,8 +155,6 @@ uint8_t u8x8_d_uc1604_common(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *a
   module whether the display has a is low or high active chip select.
 
 */
-#define ROW_NUM 192
-#define COL_NUM 48
 static const u8x8_display_info_t u8x8_uc1604_192x64_display_info =
 {
   /* chip_enable_level = */ 0,	/* JLX19264G uses CS0, which is low active CS*/
@@ -177,17 +175,38 @@ static const u8x8_display_info_t u8x8_uc1604_192x64_display_info =
   /* tile_hight = */ 8,
   /* default_x_offset = */ 0,	/* reused as y page offset */
   /* flipmode_x_offset = */ 0,	/* reused as y page offset */
-  /* pixel_width = */ ROW_NUM,
-  /* pixel_height = */ COL_NUM,
+  /* pixel_width = */ 192,
+  /* pixel_height = */ 64,
 };
 
-#define COL_END ((COL_NUM % 8 == 0) ? (COL_NUM - 1) : (COL_NUM - 2))
+static const u8x8_display_info_t u8x8_uc1604_192x48_display_info =
+{
+  /* chip_enable_level = */ 0,	/* JLX19264G uses CS0, which is low active CS*/
+  /* chip_disable_level = */ 1,
+  
+  /* post_chip_enable_wait_ns = */ 20,	
+  /* pre_chip_disable_wait_ns = */ 20,	
+  /* reset_pulse_width_ms = */ 1, 	
+  /* post_reset_wait_ms = */ 10, 	
+  /* sda_setup_time_ns = */ 30,		
+  /* sck_pulse_width_ns = */ 65,	/* half of cycle time  */
+  /* sck_clock_hz = */ 8000000UL,	/* since Arduino 1.6.0, the SPI bus speed in Hz. Should be  1000000000/sck_pulse_width_ns */
+  /* spi_mode = */ 0,		/* active high, rising edge */
+  /* i2c_bus_clock_100kHz = */ 4,
+  /* data_setup_time_ns = */ 30,	
+  /* write_pulse_width_ns = */ 35,	
+  /* tile_width = */ 24,		/* width of 24*8=192 pixel */
+  /* tile_hight = */ 8,
+  /* default_x_offset = */ 0,	/* reused as y page offset */
+  /* flipmode_x_offset = */ 0,	/* reused as y page offset */
+  /* pixel_width = */ 192,
+  /* pixel_height = */ 48,
+};
 
 static const uint8_t u8x8_d_uc1604_jlx19264_init_seq[] = {
     
   U8X8_START_TRANSFER(),             	/* enable chip, delay is part of the transfer start */
 
-#if 0
   U8X8_C(0x0e2),            			/* soft reset */
   U8X8_DLY(200),
   U8X8_DLY(200),
@@ -214,7 +233,15 @@ static const uint8_t u8x8_d_uc1604_jlx19264_init_seq[] = {
   U8X8_C(0x000),		                /* column low nibble */
   U8X8_C(0x010),		                /* column high nibble */  
   U8X8_C(0x0b0),		                /* page adr  */
-#else
+
+  U8X8_END_TRANSFER(),             	/* disable chip */
+  U8X8_END()             			/* end of sequence */
+};
+
+static const uint8_t u8x8_d_uc1604_jlx19248_init_seq[] = {
+    
+  U8X8_START_TRANSFER(),             	/* enable chip, delay is part of the transfer start */
+
   U8X8_C(0xE2), /* soft reset */
   U8X8_DLY(200),
 
@@ -227,34 +254,36 @@ static const uint8_t u8x8_d_uc1604_jlx19264_init_seq[] = {
   U8X8_C(0x85),   /* Set Partial Display Control   Enable Partial Display */ 
   U8X8_DLY(200),
 
-  U8X8_C(0x81),  /* Set Vbisa Potentiometer */
-  U8X8_C(0x9F),  /* Set VopSet(USERVOP), PM[7:0] */
-  U8X8_C(0xA1),  /* Set Frame Rate  A0b: 76 fps A1b: 95 fps A2b: 132 fps A3b: 168 fps */
-  U8X8_C(0x2F),  /* set pump control:0x2f=internal Vlcd; 0x2c=external Vlcd */
+  U8X8_C(0x81),   /* Set Vbisa Potentiometer */
+  U8X8_C(0x9F),   /* Set VopSet(USERVOP), PM[7:0] */
+  U8X8_C(0xA1),   /* Set Frame Rate  A0b: 76 fps A1b: 95 fps A2b: 132 fps A3b: 168 fps */
+  U8X8_C(0x2F),   /* set pump control:0x2f=internal Vlcd; 0x2c=external Vlcd */
   U8X8_C(0x25),   /* Bit 0/1: Temp compenstation, Bit 2: Multiplex Rate 0=96, 1=128 */
   U8X8_C(0x88),		/* set AC[2:0] */
 
   U8X8_C(0xC4),		/* LCD mapping control: MY=0,MX=0,SL=0  1 1 0 0 0 MY MX 0 */
 
   U8X8_C(0xF1),		/* Set COM end */
-  U8X8_C(COL_END),   /* (Col % 8 == 0) ? (Col - 1) : (Col - 2) */
+  U8X8_C(0x2F),   /* (Col % 8 == 0) ? (Col - 1) : (Col - 2) */
 
   U8X8_C(0xF2),   /* Set Start */
   U8X8_C(0x00),   /* ... */
 
   U8X8_C(0xF3),   /* Set End */
-  U8X8_C(COL_END),  /* 0x2f */
+  U8X8_C(0x2F),   /* 0x2f */
 
-  U8X8_C(0xAF), /* Set Display On */
+  U8X8_C(0xAF),   /* Set Display On */
   U8X8_DLY(200),
-#endif // UC1604C
 
   U8X8_END_TRANSFER(),             	/* disable chip */
   U8X8_END()             			/* end of sequence */
 };
 
-uint8_t u8x8_d_uc1604_jlx19264(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
+uint8_t u8x8_d_uc1604_jlxCR(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr, uint8_t col, uint8_t row)
 {
+  if(col != 192) 
+    printf("col only 192 supported now.");
+
   /* call common procedure first and handle messages there */
   if ( u8x8_d_uc1604_common(u8x8, msg, arg_int, arg_ptr) == 0 )
   {
@@ -262,11 +291,13 @@ uint8_t u8x8_d_uc1604_jlx19264(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
     switch(msg)
     {
       case U8X8_MSG_DISPLAY_SETUP_MEMORY:
-	u8x8_d_helper_display_setup_memory(u8x8, &u8x8_uc1604_192x64_display_info);
+	u8x8_d_helper_display_setup_memory(u8x8, \
+            row == 48 ? &u8x8_uc1604_192x48_display_info : &u8x8_uc1604_192x64_display_info);
 	break;
       case U8X8_MSG_DISPLAY_INIT:
 	u8x8_d_helper_display_init(u8x8);
-	u8x8_cad_SendSequence(u8x8, u8x8_d_uc1604_jlx19264_init_seq);
+	u8x8_cad_SendSequence(u8x8, \
+            row == 48 ? u8x8_d_uc1604_jlx19248_init_seq : u8x8_d_uc1604_jlx19264_init_seq) ;
 	break;
       default:
 	return 0;		/* msg unknown */
@@ -275,4 +306,12 @@ uint8_t u8x8_d_uc1604_jlx19264(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
   return 1;
 }
 
+uint8_t u8x8_d_uc1604_jlx19264(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
+{
+  return u8x8_d_uc1604_jlxCR(u8x8, msg, arg_int, arg_ptr, 192, 64);
+}
 
+uint8_t u8x8_d_uc1604_jlx19248(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
+{
+  return u8x8_d_uc1604_jlxCR(u8x8, msg, arg_int, arg_ptr, 192, 48);
+}

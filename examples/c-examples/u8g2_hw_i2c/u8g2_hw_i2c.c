@@ -6,7 +6,8 @@ int main(void)
     u8g2_t u8g2;
 
     // Initialization    
-    u8g2_Setup_ssd1306_i2c_128x64_noname_f( &u8g2, U8G2_R0, u8x8_byte_arm_linux_hw_i2c, u8x8_arm_linux_gpio_and_delay);
+    u8g2_Setup_uc1604_i2c_jlx19248_f(&u8g2, U8G2_R0, u8x8_byte_arm_linux_hw_i2c, u8x8_arm_linux_gpio_and_delay);
+    u8x8_SetPin(u8g2_GetU8x8(&u8g2), U8X8_PIN_RESET, 376);
     u8g2_InitDisplay(&u8g2);
     u8g2_SetPowerSave(&u8g2, 0);
 
