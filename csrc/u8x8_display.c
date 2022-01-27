@@ -68,11 +68,11 @@ void u8x8_d_helper_display_init(u8x8_t *u8x8)
       u8x8_cad_Init(u8x8);              /* this will also call U8X8_MSG_BYTE_INIT, byte init will NOT call GPIO_INIT */
 
       /* 3) do reset */
-      u8x8_gpio_SetReset(u8x8, 1);
-      u8x8_gpio_Delay(u8x8, U8X8_MSG_DELAY_MILLI, u8x8->display_info->reset_pulse_width_ms);
       u8x8_gpio_SetReset(u8x8, 0);
       u8x8_gpio_Delay(u8x8, U8X8_MSG_DELAY_MILLI, u8x8->display_info->reset_pulse_width_ms);
       u8x8_gpio_SetReset(u8x8, 1);
+      u8x8_gpio_Delay(u8x8, U8X8_MSG_DELAY_MILLI, u8x8->display_info->reset_pulse_width_ms);
+      u8x8_gpio_SetReset(u8x8, 0);
       u8x8_gpio_Delay(u8x8, U8X8_MSG_DELAY_MILLI, u8x8->display_info->post_reset_wait_ms);
 }    
 
