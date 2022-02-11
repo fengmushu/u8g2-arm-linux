@@ -245,44 +245,48 @@ static const uint8_t u8x8_d_uc1604_jlx19248_init_seq[] = {
   U8X8_C(0xE2), /* soft reset */
   U8X8_DLY(200),
 
-  U8X8_C(0xEA),   /* bais: 0xeb=1/9bias; 0xe8=1/6bias; 0xe9=1/7bias; 0xea=1/8bias */
-  U8X8_DLY(200),
+  U8X8_C(0x25),   /* Bit 0/1: Temp compenstation, 0.05% 0.1% 0.15% */
+  U8X8_C(0x2F),   /* Set Pump Control: 0x2f=internal Vlcd; 0x2c=external Vlcd */
 
-  U8X8_C(0x02F),  /* power on, Bit 2 PC2=1 (internal charge pump), Bits 0/1: cap of panel */
-  U8X8_DLY(200),
+  U8X8_CA(0x81, 0x70),    /* Set Vbisa Potentiometer: [7:0] */
+  U8X8_C(0x84),           /* Set Partial Display Control, Enable Partial Display: 1b */
+  U8X8_C(0x89),           /* set Ram Access Control: 000b [dir, order-c/r, wrap] */
 
-  U8X8_C(0x85),   /* Set Partial Display Control   Enable Partial Display */ 
-  U8X8_DLY(200),
+  U8X8_C(0xA0),       /* Set Frame Rate A0b: 76 fps A1b: 95 fps A2b: 132 fps A3b: 168 fps */
+  U8X8_C(0xC4),		    /* Set LCD mapping control: MY=0,MX=0,SL=0  1 1 0 0 0 MY MX 0 */
+  U8X8_C(0xEB),       /* Set LCD bais ratio: 0xeb=1/9bias; 0xe8=1/6bias; 0xe9=1/7bias; 0xea=1/8bias */
 
-  U8X8_C(0x81),   /* Set Vbisa Potentiometer */
-  U8X8_C(0x9F),   /* Set VopSet(USERVOP), PM[7:0] */
-  U8X8_C(0xA1),   /* Set Frame Rate  A0b: 76 fps A1b: 95 fps A2b: 132 fps A3b: 168 fps */
-  U8X8_C(0x2F),   /* set pump control:0x2f=internal Vlcd; 0x2c=external Vlcd */
-  U8X8_C(0x25),   /* Bit 0/1: Temp compenstation, Bit 2: Multiplex Rate 0=96, 1=128 */
-  U8X8_C(0x88),		/* set AC[2:0] */
+  U8X8_CA(0xF1, 0x2F),		  /* Set COM end [N-1], where N is the number of pixel rows */
+  U8X8_CA(0xF2, 0x00),      /* Set Partial Start */
+  U8X8_CA(0xF3, 0x2F),      /* Set Partial End: [5:0], Scroll */
+  U8X8_CA(0xF8, 0x00),      /* Set MTP Operation control: [4: enable, 3: auto clean, 2-0:Program-Erase-Read-Sleep] */
+  U8X8_DLY(20),
 
-  U8X8_C(0xC4),		/* LCD mapping control: MY=0,MX=0,SL=0  1 1 0 0 0 MY MX 0 */
+  /* Set Cursors */
+  U8X8_C(0x40),     /* Scroll: 0x40 ~ 7F : 0~63 */
+  U8X8_C(0xB0),     /* Page: 0xB0 ~ BF : 0~8 */
+  U8X8_C(0x00),        /* Col LSB */
+  U8X8_C(0x10),        /* Col MSB */
 
-  U8X8_C(0xF1),		/* Set COM end */
-  U8X8_C(0x2F),   /* (Col % 8 == 0) ? (Col - 1) : (Col - 2) */
-
-  U8X8_C(0xF2),   /* Set Start */
-  U8X8_C(0x00),   /* ... */
-
-  U8X8_C(0xF3),   /* Set End */
-  U8X8_C(0x2F),   /* 0x2f */
+  U8X8_C(0xA4),   /* Entire display: normal display */
+  U8X8_C(0xA6),   /* Reverse display: normal display */
 
   U8X8_C(0xAF),   /* Set Display On */
   U8X8_DLY(200),
 
-  U8X8_END_TRANSFER(),             	/* disable chip */
-  U8X8_END()             			/* end of sequence */
+  U8X8_END_TRANSFER(),  /* disable chip */
+  U8X8_END()            /* end of sequence */
 };
 
 uint8_t u8x8_d_uc1604_jlxCR(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr, uint8_t col, uint8_t row)
 {
   if(col != 192) 
     printf("col only 192 supported now.");
+
+  // row = 64;
+
+  const u8x8_display_info_t* dpi = (row == 48 ? &u8x8_uc1604_192x48_display_info : &u8x8_uc1604_192x64_display_info);
+  const uint8_t*        seq_init = (row == 48 ? u8x8_d_uc1604_jlx19248_init_seq : u8x8_d_uc1604_jlx19264_init_seq);
 
   /* call common procedure first and handle messages there */
   if ( u8x8_d_uc1604_common(u8x8, msg, arg_int, arg_ptr) == 0 )
@@ -291,13 +295,11 @@ uint8_t u8x8_d_uc1604_jlxCR(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *ar
     switch(msg)
     {
       case U8X8_MSG_DISPLAY_SETUP_MEMORY:
-	u8x8_d_helper_display_setup_memory(u8x8, \
-            row == 48 ? &u8x8_uc1604_192x48_display_info : &u8x8_uc1604_192x64_display_info);
+	u8x8_d_helper_display_setup_memory(u8x8, dpi);
 	break;
       case U8X8_MSG_DISPLAY_INIT:
 	u8x8_d_helper_display_init(u8x8);
-	u8x8_cad_SendSequence(u8x8, \
-            row == 48 ? u8x8_d_uc1604_jlx19248_init_seq : u8x8_d_uc1604_jlx19264_init_seq) ;
+	u8x8_cad_SendSequence(u8x8, seq_init) ;
 	break;
       default:
 	return 0;		/* msg unknown */
