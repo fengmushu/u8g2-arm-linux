@@ -4,7 +4,7 @@ int openI2CDevice(const char* device)
 {
     int i2c_fd;
     char filename[40];
-    sprintf(filename, device);
+    snprintf(filename, sizeof(filename), "%s", device);
     if ((i2c_fd = open(filename,O_RDWR)) < 0) 
 	{
         printf("Failed to open the bus.");
@@ -26,10 +26,17 @@ void setI2CSlave(int i2c_fd,int addr)
 
 void I2CWriteBytes(int i2c_fd, uint8_t* data, uint8_t length)
 {
-    if (write(i2c_fd, data, length) != length) 
+    int rlen;
+    static int total = 0;
+
+    if ( (rlen = write(i2c_fd, data, length)) != length) 
 	{
         /* ERROR HANDLING: i2c transaction failed */
-        printf("Failed to write to the i2c bus.\n");
+        printf("Failed to write to the i2c bus, length: %d < %u\n", rlen, length);
+        exit(rlen);
+    } else {
+        total += rlen;
+        printf("wrote to the i2c bus, length: %d, total: %d\n", rlen, total);
     }
 }
 
