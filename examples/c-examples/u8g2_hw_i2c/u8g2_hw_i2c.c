@@ -22,11 +22,11 @@ int main(void)
 
     u8g2_SetFont(&u8g2, u8g2_font_helvR12_tf);
     u8g2_DrawStr(&u8g2, 1, 18, "Smart ding ding ... aha");
-    // u8g2_SendBuffer(&u8g2);sleep_ms(10);
-
-    // u8g2_SetPowerSave(&u8g2, 0);
+    // u8g2_SendBuffer(&u8g2);
 
     u8g2_SetFont(&u8g2, u8g2_font_unifont_t_symbols);
+    u8g2_DrawGlyph(&u8g2, random() % 192, random() % 48, 0x2603 );
+    u8g2_DrawGlyph(&u8g2, random() % 192, random() % 48, 0x2603 );
     u8g2_DrawGlyph(&u8g2, random() % 192, random() % 48, 0x2603 );
 
     u8g2_SendBuffer(&u8g2);
