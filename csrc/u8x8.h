@@ -606,8 +606,8 @@ void u8x8_ClearLine(u8x8_t *u8x8, uint8_t line);
 /* arg_int = 0: disable chip, arg_int = 1: enable chip */
 //#define U8X8_MSG_CAD_SET_I2C_ADR 26
 //#define U8X8_MSG_CAD_SET_DEVICE 27
-
-
+#define U8X8_MSG_CAD_DELAY 0xfe
+#define U8X8_MSG_CAD_END 0xff
 
 /* u8g_cad.c */
 
@@ -615,7 +615,7 @@ void u8x8_ClearLine(u8x8_t *u8x8, uint8_t line);
 
 uint8_t u8x8_cad_SendCmd(u8x8_t *u8x8, uint8_t cmd) U8X8_NOINLINE;
 uint8_t u8x8_cad_SendArg(u8x8_t *u8x8, uint8_t arg) U8X8_NOINLINE;
-uint8_t u8x8_cad_SendMultipleArg(u8x8_t *u8x8, uint8_t cnt, uint8_t arg) U8X8_NOINLINE;
+uint8_t u8x8_cad_SendMultipleArg(u8x8_t *u8x8, uint8_t cnt, uint8_t *args) U8X8_NOINLINE;
 uint8_t u8x8_cad_SendData(u8x8_t *u8x8, uint8_t cnt, uint8_t *data) U8X8_NOINLINE;
 uint8_t u8x8_cad_StartTransfer(u8x8_t *u8x8) U8X8_NOINLINE;
 uint8_t u8x8_cad_EndTransfer(u8x8_t *u8x8) U8X8_NOINLINE;
@@ -645,8 +645,8 @@ void u8x8_SendF(u8x8_t * u8x8, const char *fmt, ...);
 
 #define U8X8_START_TRANSFER()	(U8X8_MSG_CAD_START_TRANSFER)
 #define U8X8_END_TRANSFER()	(U8X8_MSG_CAD_END_TRANSFER)
-#define U8X8_DLY(m)			(0xfe),(m)		/* delay in milli seconds */
-#define U8X8_END()			(0xff)
+#define U8X8_DLY(m)			(U8X8_MSG_CAD_DELAY),(m)		/* delay in milli seconds */
+#define U8X8_END()			(U8X8_MSG_CAD_END)
 
 void u8x8_cad_SendSequence(u8x8_t *u8x8, uint8_t const *data);
 uint8_t u8x8_cad_empty(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);

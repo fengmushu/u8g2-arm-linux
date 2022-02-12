@@ -29,6 +29,9 @@ void I2CWriteBytes(int i2c_fd, uint8_t* data, uint8_t length)
     int rlen;
     static int total = 0;
 
+    if(!data || length <= 0)
+        return;
+
     if ( (rlen = write(i2c_fd, data, length)) != length) 
 	{
         /* ERROR HANDLING: i2c transaction failed */
@@ -36,7 +39,7 @@ void I2CWriteBytes(int i2c_fd, uint8_t* data, uint8_t length)
         exit(rlen);
     } else {
         total += rlen;
-        printf("wrote to the i2c bus, length: %d, total: %d\n", rlen, total);
+        printf("Wrote to the i2c bus, len: %d, total: %d\n\n", rlen, total);
     }
 }
 

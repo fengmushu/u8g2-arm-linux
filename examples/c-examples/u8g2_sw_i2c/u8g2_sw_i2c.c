@@ -5,6 +5,12 @@
 #define OLED_I2C_PIN_SDA                    446
 #define OLED_I2C_PIN_RST                    367
 
+/*
+*   modprobe i2c-gpio
+*   insmod i2c-gpio-custom.ko bus0=12,446,447
+*   
+*/
+
 int main(void)
 {
     u8g2_t u8g2;

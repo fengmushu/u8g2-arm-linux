@@ -1,7 +1,7 @@
 #include "u8g2port.h"
 
 static int i2c_device;
-static const char i2c_bus[] = "/dev/i2c-2";
+static const char i2c_bus[] = "/dev/i2c-12";
 
 static int spi_device;
 static const char spi_bus[] = "/dev/spidev0.0";
@@ -267,6 +267,7 @@ uint8_t u8x8_byte_arm_linux_hw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, v
 
         case U8X8_MSG_BYTE_END_TRANSFER:
             I2CWriteBytes(i2c_device, buffer, buf_idx);
+            buf_idx = 0; //flush buffer
             break;
 
         default:

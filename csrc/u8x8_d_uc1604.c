@@ -72,74 +72,76 @@ static const uint8_t u8x8_d_uc1604_flip1_seq[] = {
   U8X8_END()             			/* end of sequence */
 };
 
-
 uint8_t u8x8_d_uc1604_common(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
 {
   uint8_t x, y, c;
   uint8_t *ptr;
-  switch(msg)
+
+  // printf("%s message: %d\n", __func__, msg);
+
+  switch (msg)
   {
-    case U8X8_MSG_DISPLAY_DRAW_TILE:
-      u8x8_cad_StartTransfer(u8x8);
-    
-      x = ((u8x8_tile_t *)arg_ptr)->x_pos;
-      x *= 8;
-   
-      u8x8_cad_SendCmd(u8x8, 0x000 | ((x&15)));
-      u8x8_cad_SendCmd(u8x8, 0x010 | (x>>4) );
-    
-      y = ((u8x8_tile_t *)arg_ptr)->y_pos;
-      y += u8x8->x_offset;
-      u8x8_cad_SendCmd(u8x8, 0x0b0 | (y&15));
-    
-      c = ((u8x8_tile_t *)arg_ptr)->cnt;
-      c *= 8;
-      ptr = ((u8x8_tile_t *)arg_ptr)->tile_ptr;
-      do
-      {
-	u8x8_cad_SendData(u8x8, c, ptr);	/* note: SendData can not handle more than 255 bytes */
-	arg_int--;
-      } while( arg_int > 0 );
-      
-      u8x8_cad_EndTransfer(u8x8);
-      break;
-    /*	handled in the calling procedure 
-    case U8X8_MSG_DISPLAY_SETUP_MEMORY:
-      u8x8_d_helper_display_setup_memory(u8x8, &u8x8_uc1604_128x64_display_info);
-      break;
-    case U8X8_MSG_DISPLAY_INIT:
-      u8x8_d_helper_display_init(u8x8);
-      u8x8_cad_SendSequence(u8x8, u8x8_d_uc1701_dogs102_init_seq);
-      break;
-    */
-    case U8X8_MSG_DISPLAY_SET_POWER_SAVE:
-      if ( arg_int == 0 )
-	u8x8_cad_SendSequence(u8x8, u8x8_d_uc1604_powersave0_seq);
-      else
-	u8x8_cad_SendSequence(u8x8, u8x8_d_uc1604_powersave1_seq);
-      break;
-    case U8X8_MSG_DISPLAY_SET_FLIP_MODE:
-      if ( arg_int == 0 )
-      {
-	u8x8_cad_SendSequence(u8x8, u8x8_d_uc1604_flip0_seq);
-	u8x8->x_offset = u8x8->display_info->default_x_offset;
-      }
-      else
-      {
-	u8x8_cad_SendSequence(u8x8, u8x8_d_uc1604_flip1_seq);
-	u8x8->x_offset = u8x8->display_info->flipmode_x_offset;
-      }	
-      break;
+  case U8X8_MSG_DISPLAY_DRAW_TILE:
+    u8x8_cad_StartTransfer(u8x8);
+
+    x = ((u8x8_tile_t *)arg_ptr)->x_pos;
+    x *= 8;
+
+    u8x8_cad_SendCmd(u8x8, 0x000 | ((x & 15)));
+    u8x8_cad_SendCmd(u8x8, 0x010 | (x >> 4));
+
+    y = ((u8x8_tile_t *)arg_ptr)->y_pos;
+    y += u8x8->x_offset;
+    u8x8_cad_SendCmd(u8x8, 0x0b0 | (y & 15));
+
+    c = ((u8x8_tile_t *)arg_ptr)->cnt;
+    c *= 8;
+    ptr = ((u8x8_tile_t *)arg_ptr)->tile_ptr;
+    do
+    {
+      u8x8_cad_SendData(u8x8, c, ptr); /* note: SendData can not handle more than 255 bytes */
+      arg_int--;
+    } while (arg_int > 0);
+
+    u8x8_cad_EndTransfer(u8x8);
+    break;
+  /*	handled in the calling procedure
+  case U8X8_MSG_DISPLAY_SETUP_MEMORY:
+    u8x8_d_helper_display_setup_memory(u8x8, &u8x8_uc1604_128x64_display_info);
+    break;
+  case U8X8_MSG_DISPLAY_INIT:
+    u8x8_d_helper_display_init(u8x8);
+    u8x8_cad_SendSequence(u8x8, u8x8_d_uc1701_dogs102_init_seq);
+    break;
+  */
+  case U8X8_MSG_DISPLAY_SET_POWER_SAVE:
+    if (arg_int == 0)
+      u8x8_cad_SendSequence(u8x8, u8x8_d_uc1604_powersave0_seq);
+    else
+      u8x8_cad_SendSequence(u8x8, u8x8_d_uc1604_powersave1_seq);
+    break;
+  case U8X8_MSG_DISPLAY_SET_FLIP_MODE:
+    if (arg_int == 0)
+    {
+      u8x8_cad_SendSequence(u8x8, u8x8_d_uc1604_flip0_seq);
+      u8x8->x_offset = u8x8->display_info->default_x_offset;
+    }
+    else
+    {
+      u8x8_cad_SendSequence(u8x8, u8x8_d_uc1604_flip1_seq);
+      u8x8->x_offset = u8x8->display_info->flipmode_x_offset;
+    }
+    break;
 #ifdef U8X8_WITH_SET_CONTRAST
-    case U8X8_MSG_DISPLAY_SET_CONTRAST:
-      u8x8_cad_StartTransfer(u8x8);
-      u8x8_cad_SendCmd(u8x8, 0x081 );
-      u8x8_cad_SendArg(u8x8, arg_int  );	/* uc1604 has range from 0 to 255 */
-      u8x8_cad_EndTransfer(u8x8);
-      break;
+  case U8X8_MSG_DISPLAY_SET_CONTRAST:
+    u8x8_cad_StartTransfer(u8x8);
+    u8x8_cad_SendCmd(u8x8, 0x081);
+    u8x8_cad_SendArg(u8x8, arg_int); /* uc1604 has range from 0 to 255 */
+    u8x8_cad_EndTransfer(u8x8);
+    break;
 #endif
-    default:
-      return 0;
+  default:
+    return 0;
   }
   return 1;
 }
@@ -260,7 +262,7 @@ static const uint8_t u8x8_d_uc1604_jlx19248_init_seq[] = {
   U8X8_CA(0xF2, 0x00),      /* Set Partial Start */
   U8X8_CA(0xF3, 0x2F),      /* Set Partial End: [5:0], Scroll */
   U8X8_CA(0xF8, 0x00),      /* Set MTP Operation control: [4: enable, 3: auto clean, 2-0:Program-Erase-Read-Sleep] */
-  U8X8_DLY(20),
+  // U8X8_DLY(20),
 
   /* Set Cursors */
   U8X8_C(0x40),     /* Scroll: 0x40 ~ 7F : 0~63 */
@@ -271,8 +273,8 @@ static const uint8_t u8x8_d_uc1604_jlx19248_init_seq[] = {
   U8X8_C(0xA4),   /* Entire display: normal display */
   U8X8_C(0xA6),   /* Reverse display: normal display */
 
-  U8X8_C(0xAF),   /* Set Display On */
-  U8X8_DLY(200),
+  // U8X8_C(0xAF),   /* Set Display On */
+  // U8X8_DLY(20),
 
   U8X8_END_TRANSFER(),  /* disable chip */
   U8X8_END()            /* end of sequence */
@@ -280,29 +282,29 @@ static const uint8_t u8x8_d_uc1604_jlx19248_init_seq[] = {
 
 uint8_t u8x8_d_uc1604_jlxCR(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr, uint8_t col, uint8_t row)
 {
-  if(col != 192) 
+  if (col != 192)
     printf("col only 192 supported now.");
 
   // row = 64;
 
-  const u8x8_display_info_t* dpi = (row == 48 ? &u8x8_uc1604_192x48_display_info : &u8x8_uc1604_192x64_display_info);
-  const uint8_t*        seq_init = (row == 48 ? u8x8_d_uc1604_jlx19248_init_seq : u8x8_d_uc1604_jlx19264_init_seq);
+  const u8x8_display_info_t *dpi = (row == 48 ? &u8x8_uc1604_192x48_display_info : &u8x8_uc1604_192x64_display_info);
+  const uint8_t *seq_init = (row == 48 ? u8x8_d_uc1604_jlx19248_init_seq : u8x8_d_uc1604_jlx19264_init_seq);
 
   /* call common procedure first and handle messages there */
-  if ( u8x8_d_uc1604_common(u8x8, msg, arg_int, arg_ptr) == 0 )
+  if (u8x8_d_uc1604_common(u8x8, msg, arg_int, arg_ptr) == 0)
   {
     /* msg not handled, then try here */
-    switch(msg)
+    switch (msg)
     {
-      case U8X8_MSG_DISPLAY_SETUP_MEMORY:
-	u8x8_d_helper_display_setup_memory(u8x8, dpi);
-	break;
-      case U8X8_MSG_DISPLAY_INIT:
-	u8x8_d_helper_display_init(u8x8);
-	u8x8_cad_SendSequence(u8x8, seq_init) ;
-	break;
-      default:
-	return 0;		/* msg unknown */
+    case U8X8_MSG_DISPLAY_SETUP_MEMORY:
+      u8x8_d_helper_display_setup_memory(u8x8, dpi);
+      break;
+    case U8X8_MSG_DISPLAY_INIT:
+      u8x8_d_helper_display_init(u8x8);
+      u8x8_cad_SendSequence(u8x8, seq_init);
+      break;
+    default:
+      return 0; /* msg unknown */
     }
   }
   return 1;
