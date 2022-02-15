@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <u8g2port.h>
 
-#define OLED_I2C_PIN_RST                    332 //367
+#define OLED_I2C_PIN_RST                    376
 
 int main(void)
 {

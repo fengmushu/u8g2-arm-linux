@@ -3,9 +3,12 @@
 
 #define OLED_I2C_PIN_SCL                    447
 #define OLED_I2C_PIN_SDA                    446
-#define OLED_I2C_PIN_RST                    367
+#define OLED_I2C_PIN_RST                    376
 
-/*
+/*  
+*   echo 446 > /sys/class/gpio/unexport 
+*   echo 447 > /sys/class/gpio/unexport
+*   
 *   modprobe i2c-gpio
 *   insmod i2c-gpio-custom.ko bus0=12,446,447
 *   
