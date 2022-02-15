@@ -274,7 +274,7 @@ static const uint8_t u8x8_d_uc1604_jlx19248_init_seq[] = {
   U8X8_C(0xA6),   /* Reverse display: normal display */
 
   // U8X8_C(0xAF),   /* Set Display On */
-  // U8X8_DLY(20),
+  U8X8_DLY(20),
 
   U8X8_END_TRANSFER(),  /* disable chip */
   U8X8_END()            /* end of sequence */

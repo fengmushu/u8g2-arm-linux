@@ -266,7 +266,9 @@ uint8_t u8x8_byte_arm_linux_hw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, v
             break;
 
         case U8X8_MSG_BYTE_END_TRANSFER:
-            I2CWriteBytes(i2c_device, buffer, buf_idx);
+        case U8X8_MSG_BYTE_FLASH_BUFFER:
+            if(buf_idx > 0)
+                I2CWriteBytes(i2c_device, buffer, buf_idx);
             buf_idx = 0; //flush buffer
             break;
 

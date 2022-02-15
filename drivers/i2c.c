@@ -5,7 +5,7 @@ int openI2CDevice(const char* device)
     int i2c_fd;
     char filename[40];
     snprintf(filename, sizeof(filename), "%s", device);
-    if ((i2c_fd = open(filename,O_RDWR)) < 0) 
+    if ((i2c_fd = open(filename,O_RDWR | O_NONBLOCK)) < 0) 
 	{
         printf("Failed to open the bus.");
         /* ERROR HANDLING; you can check errno to see what went wrong */

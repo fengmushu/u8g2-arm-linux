@@ -60,6 +60,7 @@
     U8X8_MSG_CAD_SEND_ARG
     U8X8_MSG_CAD_SEND_DATA
     U8X8_MSG_CAD_END_TRANSFER
+    U8X8_MSG_CAD_FLUSH_BUFFER
     
   The byte interface is there to send 1 byte (8 bits) to the display hardware.
   This layer depends on the hardware of a microcontroller, if a specific hardware 
@@ -604,7 +605,7 @@ void u8x8_ClearLine(u8x8_t *u8x8, uint8_t line);
 /* arg_int: expected cs level after processing this msg */
 #define U8X8_MSG_CAD_END_TRANSFER 25
 /* arg_int = 0: disable chip, arg_int = 1: enable chip */
-//#define U8X8_MSG_CAD_SET_I2C_ADR 26
+#define U8X8_MSG_CAD_FLUSH_BUFFER 26
 //#define U8X8_MSG_CAD_SET_DEVICE 27
 #define U8X8_MSG_CAD_DELAY 0xfe
 #define U8X8_MSG_CAD_END 0xff
@@ -645,6 +646,7 @@ void u8x8_SendF(u8x8_t * u8x8, const char *fmt, ...);
 
 #define U8X8_START_TRANSFER()	(U8X8_MSG_CAD_START_TRANSFER)
 #define U8X8_END_TRANSFER()	(U8X8_MSG_CAD_END_TRANSFER)
+#define U8X8_FLASH_BUFFER() (U8X8_MSG_CAD_FLUSH_BUFFER)
 #define U8X8_DLY(m)			(U8X8_MSG_CAD_DELAY),(m)		/* delay in milli seconds */
 #define U8X8_END()			(U8X8_MSG_CAD_END)
 
@@ -674,6 +676,7 @@ uint8_t u8x8_cad_uc1638_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *ar
 
 #define U8X8_MSG_BYTE_START_TRANSFER U8X8_MSG_CAD_START_TRANSFER
 #define U8X8_MSG_BYTE_END_TRANSFER U8X8_MSG_CAD_END_TRANSFER
+#define U8X8_MSG_BYTE_FLASH_BUFFER U8X8_MSG_CAD_FLUSH_BUFFER
 
 //#define U8X8_MSG_BYTE_SET_I2C_ADR U8X8_MSG_CAD_SET_I2C_ADR
 //#define U8X8_MSG_BYTE_SET_DEVICE U8X8_MSG_CAD_SET_DEVICE

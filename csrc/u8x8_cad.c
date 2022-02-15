@@ -138,6 +138,11 @@ uint8_t u8x8_cad_EndTransfer(u8x8_t *u8x8)
   return u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
 }
 
+uint8_t u8x8_cad_FlashBuffer(u8x8_t *u8x8)
+{
+  return u8x8->cad_cb(u8x8, U8X8_MSG_CAD_FLUSH_BUFFER, 0, NULL);
+}
+
 void u8x8_cad_vsendf(u8x8_t * u8x8, const char *fmt, va_list va)
 {
   uint8_t d;
@@ -205,7 +210,8 @@ void u8x8_cad_SendSequence(u8x8_t *u8x8, uint8_t const *data)
       u8x8->cad_cb(u8x8, cmd, 0, NULL);
       break;
     case U8X8_MSG_CAD_DELAY:
-      u8x8_byte_EndTransfer(u8x8);
+      // u8x8_byte_EndTransfer(u8x8);
+      u8x8_cad_FlashBuffer(u8x8);
       v = *data;
       u8x8_gpio_Delay(u8x8, U8X8_MSG_DELAY_MILLI, v);
       data++;
@@ -822,6 +828,10 @@ uint8_t u8x8_cad_uc16xx_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *ar
     if (in_transfer != 0)
       u8x8_byte_EndTransfer(u8x8);
     in_transfer = 0;
+    break;
+  case U8X8_MSG_CAD_FLUSH_BUFFER:
+      u8x8_byte_EndTransfer(u8x8);
+    /* just flush buffer, do not change transfer status. */
     break;
   default:
     return 0;
