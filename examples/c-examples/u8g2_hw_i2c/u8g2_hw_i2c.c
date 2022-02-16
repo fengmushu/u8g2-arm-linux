@@ -14,15 +14,16 @@ int main(void)
     u8x8_SetPin(u8g2_GetU8x8(&u8g2), U8X8_PIN_RESET, OLED_I2C_PIN_RST);
 
     u8g2_InitDisplay(&u8g2);
-    // u8g2_SetPowerSave(&u8g2, 0);
+    u8g2_SetPowerSave(&u8g2, 0);
 
     // Draw
     /* full buffer example, setup procedure ends in _f */
-    u8g2_ClearBuffer(&u8g2);
+    // u8g2_ClearBuffer(&u8g2);
 
     u8g2_SetFont(&u8g2, u8g2_font_helvR12_tf);
     u8g2_DrawStr(&u8g2, 1, 18, "Smart ding ding ... aha");
     // u8g2_SendBuffer(&u8g2);
+    // u8g2_SetPowerSave(&u8g2, 0);
 
     u8g2_SetFont(&u8g2, u8g2_font_unifont_t_symbols);
     u8g2_DrawGlyph(&u8g2, random() % 192, random() % 48, 0x2603 );
@@ -33,7 +34,7 @@ int main(void)
 
     printf("Initialized ...\n");
 
-    u8g2_SetPowerSave(&u8g2, 0);
+    // u8g2_SetPowerSave(&u8g2, 0);
 
     return 0;
 }

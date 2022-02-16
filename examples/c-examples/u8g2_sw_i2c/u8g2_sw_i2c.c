@@ -10,8 +10,16 @@
 *   echo 447 > /sys/class/gpio/unexport
 *   
 *   modprobe i2c-gpio
-*   insmod i2c-gpio-custom.ko bus0=12,446,447
-*   
+*   insmod i2c-gpio-custom.ko bus0=12,446,447,[5/50]
+* 
+*   dmesgc -c
+*   # Custom GPIO-based I2C driver version 0.1.1
+*   # i2c-gpio i2c-gpio.12: got GPIO from name sda
+*   # i2c-gpio i2c-gpio.12: got GPIO from name scl
+*   # i2c-dev: adapter [i2c-gpio12] registered as minor 12
+*   # i2c i2c-12: adapter [i2c-gpio12] registered
+*   # i2c-gpio i2c-gpio.12: using lines 446 (SDA) and 447 (SCL)
+*   # i2c-gpio-custom: platform_device_add: 0
 */
 
 int main(void)
@@ -34,19 +42,19 @@ int main(void)
     u8g2_ClearBuffer(&u8g2);
 
     u8g2_SetFont(&u8g2, u8g2_font_helvR12_tf);
-    u8g2_DrawStr(&u8g2, 1, 18, "Smart martin ... aha");
+    u8g2_DrawStr(&u8g2, 1, 18, "Smart ding ding ... aha");
     u8g2_SendBuffer(&u8g2);
 
-    sleep_ms(10); 
+    // sleep_ms(10); 
     u8g2_SetFont(&u8g2, u8g2_font_unifont_t_symbols);
     u8g2_DrawGlyph(&u8g2, random() % 160, random() % 48 + 8, 0x2603 );
     u8g2_SendBuffer(&u8g2);
 
-    sleep_ms(10);
+    // sleep_ms(10);
     u8g2_DrawGlyph(&u8g2, random() % 160, random() % 48 + 8, 0x2603 );
     u8g2_SendBuffer(&u8g2);
 
-    sleep_ms(10);
+    // sleep_ms(10);
     u8g2_DrawGlyph(&u8g2, random() % 160, random() % 48 + 8, 0x2603 );
     u8g2_SendBuffer(&u8g2);
 
