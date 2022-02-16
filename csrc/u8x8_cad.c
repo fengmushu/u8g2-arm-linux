@@ -92,6 +92,7 @@ char* cad2str[U8X8_MSG_CAD_END+1] = {
   [U8X8_MSG_CAD_SEND_ARG] = "Arg",
   [U8X8_MSG_CAD_SEND_DATA] = "Data",
   [U8X8_MSG_CAD_START_TRANSFER] = "T-Start",
+  [U8X8_MSG_CAD_FLUSH_BUFFER] = "Flush",
   [U8X8_MSG_CAD_END_TRANSFER] = "T-End",
   [U8X8_MSG_CAD_DELAY] = "Delay",
   [U8X8_MSG_CAD_END] = "-END-"
@@ -832,7 +833,7 @@ uint8_t u8x8_cad_uc16xx_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *ar
     in_transfer = 0;
     break;
   case U8X8_MSG_CAD_FLUSH_BUFFER:
-      u8x8_byte_EndTransfer(u8x8);
+      u8x8_byte_FlushBuffer(u8x8);
     /* just flush buffer, do not change transfer status. */
     break;
   default:

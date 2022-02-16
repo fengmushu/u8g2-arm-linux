@@ -605,7 +605,7 @@ void u8x8_ClearLine(u8x8_t *u8x8, uint8_t line);
 /* arg_int: expected cs level after processing this msg */
 #define U8X8_MSG_CAD_END_TRANSFER 25
 /* arg_int = 0: disable chip, arg_int = 1: enable chip */
-#define U8X8_MSG_CAD_FLUSH_BUFFER 26
+#define U8X8_MSG_CAD_FLUSH_BUFFER 28
 //#define U8X8_MSG_CAD_SET_DEVICE 27
 #define U8X8_MSG_CAD_DELAY 0xfe
 #define U8X8_MSG_CAD_END 0xff
@@ -687,6 +687,7 @@ uint8_t u8x8_byte_SendByte(u8x8_t *u8x8, uint8_t byte) U8X8_NOINLINE;
 uint8_t u8x8_byte_SendBytes(u8x8_t *u8x8, uint8_t cnt, uint8_t *data) U8X8_NOINLINE;
 uint8_t u8x8_byte_StartTransfer(u8x8_t *u8x8);
 uint8_t u8x8_byte_EndTransfer(u8x8_t *u8x8);
+uint8_t u8x8_byte_FlushBuffer(u8x8_t *u8x8);
 
 uint8_t u8x8_byte_empty(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
 uint8_t u8x8_byte_4wire_sw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);

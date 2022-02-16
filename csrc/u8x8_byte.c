@@ -61,6 +61,12 @@ uint8_t u8x8_byte_EndTransfer(u8x8_t *u8x8)
   return u8x8->byte_cb(u8x8, U8X8_MSG_BYTE_END_TRANSFER, 0, NULL);
 }
 
+uint8_t u8x8_byte_FlushBuffer(u8x8_t *u8x8)
+{
+  return u8x8->byte_cb(u8x8, U8X8_MSG_BYTE_FLASH_BUFFER, 0, NULL);
+}
+
+
 /*=========================================*/
 
 uint8_t u8x8_byte_empty(U8X8_UNUSED u8x8_t *u8x8, uint8_t msg, U8X8_UNUSED uint8_t arg_int, U8X8_UNUSED void *arg_ptr)
@@ -461,7 +467,8 @@ static void i2c_delay(u8x8_t *u8x8) U8X8_NOINLINE;
 static void i2c_delay(u8x8_t *u8x8)
 {
   //u8x8_gpio_Delay(u8x8, U8X8_MSG_DELAY_10MICRO, u8x8->display_info->i2c_bus_clock_100kHz);
-  u8x8_gpio_Delay(u8x8, U8X8_MSG_DELAY_I2C, u8x8->display_info->i2c_bus_clock_100kHz);
+  // u8x8_gpio_Delay(u8x8, U8X8_MSG_DELAY_I2C, u8x8->display_info->i2c_bus_clock_100kHz);
+  // sleep_us(20);
 }
 
 static void i2c_init(u8x8_t *u8x8)
