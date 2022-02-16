@@ -210,8 +210,10 @@ void u8x8_cad_SendSequence(u8x8_t *u8x8, uint8_t const *data)
       u8x8->cad_cb(u8x8, cmd, 0, NULL);
       break;
     case U8X8_MSG_CAD_DELAY:
-      // u8x8_byte_EndTransfer(u8x8);
-      u8x8_cad_FlashBuffer(u8x8);
+      if(u8x8->pins[U8X8_PIN_I2C_CLOCK] == U8X8_PIN_NONE) {
+        /* hw i2c, flush buffer now; */
+        u8x8_cad_FlashBuffer(u8x8);
+      }
       v = *data;
       u8x8_gpio_Delay(u8x8, U8X8_MSG_DELAY_MILLI, v);
       data++;
