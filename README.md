@@ -1,5 +1,5 @@
 
-# U8g2 for arm-linux
+# U8g2 for arm/x86-linux
 
 <!-- [![Build Status](https://travis-ci.com/wuhanstudio/u8g2-arm-linux.svg?branch=master)](https://travis-ci.com/wuhanstudio/u8g2-arm-linux) -->
 
@@ -7,11 +7,31 @@
 
 ## Quick Start
 
-```
+``` 
 $ cd u8g2-arm-linux
-$ make CC=gcc CXX=g++
+$ make
 $ ls bin/
-```
+``` 
+
+## 针对 MZ-1FXS-CBC09-XXX 主板 三种i2c控制方式
+1. userspace软件模拟i2c
+	- 确认SCL: 447, SDA: 446, RST: 376 作为普通GPIO配置
+	- Userspace 可通过/sys/class/gpio/接口控制
+	- `$ sudo ./bin/u8g2_sw_i2c`
+
+2. 内核i2c-gpio模拟hw-i2c
+	- 修改BIOS配置, 将i2c-2关闭(使得PIN脚被定义为普通GPIO)
+	- 取消GPIO应用层导出:	`echo 446,447 > /sys/class/gpio/unexport`
+	- 加载i2c-gpio驱动:		`modprobe i2c-gpio`
+	- 加载自定义pin脚的i2c-gpio驱动: `insmod i2c-gpio-custom.ko bus0=12,446,447,[5/50]`
+	- `$ sudo ./bin/u8g2_hw_i2c`
+
+3. 硬件designware-i2c驱动
+	- 修改BIOS的ACPI开启i2c-2位designware硬件i2c
+	- `ls /dev/i2c*` 能看到 /dev/i2c-2
+	- `ls /sys/class/i2c-adapter/ -l` 能看到 i2c_designware.N/i2c-N 的适配器
+	- `$ sudo ./bin/u8g2_hw_i2c`
+
 
 Check wiki [here](https://github.com/wuhanstudio/u8g2-arm-linux/wiki) for set-up
 
