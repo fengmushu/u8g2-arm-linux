@@ -23,7 +23,7 @@ OUTDIR=../../../bin
 LDIR= -L ../../../lib
 LIBS=  -lm
 
-CFLAGS= $(IDIR) -W -Wall -D __ARM_LINUX__ -D ONLY_UC1604=1
+CFLAGS= $(IDIR) -W -Wall -D ONLY_UC1604=1
 
 OBJ+=u8g2_sw_i2c.o\
 	../../../port/u8g2port.o\

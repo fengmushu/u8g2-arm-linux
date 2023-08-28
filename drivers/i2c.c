@@ -39,7 +39,7 @@ void I2CWriteBytes(int i2c_fd, uint8_t* data, uint8_t length)
         exit(rlen);
     } else {
         total += rlen;
-        printf("Wrote to the i2c bus, len: %d, total: %d\n\n", rlen, total);
+        // printf("Wrote to the i2c bus, len: %d, total: %d\n\n", rlen, total);
     }
 }
 

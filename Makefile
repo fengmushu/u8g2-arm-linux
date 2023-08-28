@@ -1,7 +1,6 @@
 PI=pi@raspberrypi.local
 
-SUBDIRS			= examples/c-examples/u8g2_hw_i2c \
-			  examples/c-examples/u8g2_sw_i2c
+SUBDIRS			= examples/c-examples/u8g2_hw_i2c 
 TARGET			= subdirs
 PHONY			+= $(TARGET) $(SUBDIRS) %.clean
 OUTDIR          = bin
@@ -12,6 +11,7 @@ subdirs: $(SUBDIRS)
 
 $(SUBDIRS):
 	$(MAKE) -C $@
+	$(STRIP) -g -S -d $(OUTDIR)/*
 
 %.clean:
 	@(cd $(patsubst %.clean, %, $@) && $(MAKE) clean)
